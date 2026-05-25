@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Creator Club</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --pink: #D4537E;
+    --pink-light: #FBEAF0;
+    --pink-mid: #F4C0D1;
+    --pink-dark: #72243E;
+    --pink-deep: #993556;
+    --cream: #FDF8F5;
+    --text: #1a1a1a;
+    --text-muted: #888;
+    --border: rgba(212, 83, 126, 0.15);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* HERO */
+  .hero {
+    background: var(--cream);
+    padding: 64px 24px 48px;
+    text-align: center;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(212,83,126,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .pill {
+    display: inline-block;
+    background: var(--pink-light);
+    color: var(--pink-dark);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 100px;
+    margin-bottom: 24px;
+    border: 1px solid var(--pink-mid);
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 600;
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 20px;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--pink);
+  }
+
+  .hero p {
+    font-size: 16px;
+    color: var(--text-muted);
+    max-width: 500px;
+    margin: 0 auto 40px;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .stats-row {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .stat-item { text-align: center; }
+  .stat-item .num {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--pink);
+    display: block;
+  }
+  .stat-item .lbl {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* CONTENT */
+  .content {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* SECTION HEADER */
+  .sec-header {
+    padding: 48px 0 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .sec-line { flex: 1; height: 1px; background: var(--border); }
+  .sec-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--pink);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* MODULES */
+  .module {
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: #fff;
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .module:hover { border-color: var(--pink-mid); }
+
+  .module-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .mod-num {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--pink-light);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 500; color: var(--pink-dark);
+    flex-shrink: 0;
+  }
+
+  .mod-info { flex: 1; }
+  .mod-title { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+  .mod-meta { font-size: 12px; color: var(--text-muted); }
+
+  .mod-arrow {
+    color: var(--pink);
+    font-size: 18px;
+    transition: transform 0.25s;
+    flex-shrink: 0;
+  }
+
+  .module.open .mod-arrow { transform: rotate(180deg); }
+
+  .module-body {
+    display: none;
+    border-top: 1px solid var(--border);
+    padding: 20px 24px;
+  }
+
+  .module.open .module-body { display: block; }
+
+  .lesson {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 7px 0;
+  }
+
+  .lesson-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--pink);
+    margin-top: 7px;
+    flex-shrink: 0;
+  }
+
+  .lesson span { font-size: 13px; color: #555; line-height: 1.5; }
+
+  /* BONUS */
+  .bonus-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+  }
+
+  .bonus-card {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: #fff;
+    padding: 20px 16px;
+    text-align: center;
+  }
+
+  .bonus-icon {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--pink-light);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 12px;
+  }
+
+  .bonus-icon svg { width: 20px; height: 20px; stroke: var(--pink); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+  .bonus-card h4 { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
+  .bonus-card p { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+
+  /* PRICING */
+  .pricing-card {
+    border: 1px solid var(--pink-mid);
+    border-radius: 20px;
+    background: #fff;
+    padding: 32px;
+    margin-top: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pricing-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--pink-mid), var(--pink), var(--pink-mid));
+  }
+
+  .pricing-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .price-main { font-family: 'Playfair Display', serif; font-size: 40px; font-weight: 600; color: var(--text); }
+  .price-main span { font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 300; color: var(--text-muted); }
+  .price-alt { background: var(--pink-light); color: var(--pink-dark); font-size: 12px; font-weight: 500; padding: 6px 14px; border-radius: 100px; border: 1px solid var(--pink-mid); align-self: flex-start; margin-top: 8px; }
+
+  .features { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+
+  .feat {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 14px; color: #444;
+  }
+
+  .feat-check {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--pink-light);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .feat-check svg { width: 11px; height: 11px; stroke: var(--pink); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+  .cta-btn {
+    display: block;
+    width: 100%;
+    background: var(--pink);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    transition: background 0.2s, transform 0.1s;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  .cta-btn:hover { background: var(--pink-deep); }
+  .cta-btn:active { transform: scale(0.99); }
+
+  .guarantee {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 14px;
+  }
+
+  /* TESTIMONIALS */
+  .testi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+  }
+
+  .testi-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+  }
+
+  .stars { color: var(--pink); font-size: 12px; margin-bottom: 10px; letter-spacing: 2px; }
+  .testi-text { font-size: 13px; color: #555; line-height: 1.55; margin-bottom: 12px; font-style: italic; }
+  .testi-author { display: flex; align-items: center; gap: 8px; }
+  .avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--pink-light); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; color: var(--pink-dark); flex-shrink: 0; }
+  .author-name { font-size: 12px; font-weight: 500; color: var(--text); }
+  .author-tag { font-size: 11px; color: var(--text-muted); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero > * { animation: fadeUp 0.5s ease both; }
+  .hero .pill { animation-delay: 0.05s; }
+  .hero h1 { animation-delay: 0.12s; }
+  .hero p { animation-delay: 0.2s; }
+  .hero .stats-row { animation-delay: 0.28s; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="pill">🎀 Programme Complet · En ligne</div>
+  <h1>The <em>Creator</em><br>Club</h1>
+  <p>La première académie pensée pour les filles qui veulent transformer leur créativité en business et vendre sur TikTok Shop comme des pros.</p>
+  <div class="stats-row">
+    <div class="stat-item"><span class="num">6</span><span class="lbl">Modules</span></div>
+    <div class="stat-item"><span class="num">42</span><span class="lbl">Leçons vidéo</span></div>
+    <div class="stat-item"><span class="num">12 sem.</span><span class="lbl">Accès live</span></div>
+    <div class="stat-item"><span class="num">500+</span><span class="lbl">Membres</span></div>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="sec-header">
+    <div class="sec-line"></div>
+    <div class="sec-label">Le programme</div>
+    <div class="sec-line"></div>
+  </div>
+
+  <div class="module open" onclick="toggleModule(this)">
+    <div class="module-header">
+      <div class="mod-num">01</div>
+      <div class="mod-info">
+        <div class="mod-title">Les bases de TikTok Shop</div>
+        <div class="mod-meta">6 leçons · 1h30</div>
+      </div>
+      <div class="mod-arrow">↓</div>
+    </div>
+    <div class="module-body">
+      <div class="lesson"><div class="lesson-dot"></div><span>Créer et configurer ton compte vendeur TikTok Shop étape par étape</span></div>
+      <div class="lesson"><div class="lesson-dot"></div><span>Comprendre l'algorithme TikTok et comment il favorise les vendeurs</span></div>
+      <div class="lesson"><div class="lesson-dot"></div><span>Paramétrer ta boutique : photos, descriptions, politique de livraison</span></div>
+      <div class="lesson"><div class="lesson-dot"></div><span>Les erreurs de débutantes à éviter absolument dès le début</span></div>
+    </div>
+  </div>
+
+  <div class="module" onclick="toggleModule(this)">
+    <div class="module-header">
+      <div class="mod-num">02</div>
+      <div class="mod-info">
+        <div class="mod-title">Créer du contenu qui vend</div>
+        <div class="mod-meta">8 leçons · 2h15</div>
+      </div>
+      <div class="mod-arrow">↓</div>
+    </div>
+    <div class="module-body">
+      <div class="lesson"><div class="lesson-dot"></div><span>Les 5 formats vidéo qui génèrent le plus de ventes sur TikTok Shop</span></div>
+      <div class="lesson"><div class="lesson-dot"></div><span>Écrire des hooks irrésistibles pour les 3 premières secondes</span></div>
+      <div class="lesson"><div class="lesson-dot"></div><span>Filmer avec son téléphone comme une pro (lumière, son, montage)</span></div>
+      <div class="lesson"><div class="lesson-dot"></div><span>Créer un calendrier de contenu et publier en consistance</span></div>
+      <div class="lesson"><div class="lesson-dot"></div><span>Le storytelling produit : comment raconter une histoire qui convertit</span></div>
+    </div>
+  </div>
+
+  <div class="module" onclick="toggleModule(this)">
+    <div class="module-header">
+      <div class="mod-num">03</div>
+      <div class="mod-info">
+        <div class="mod-title">Trouver & sourcer tes produits</div>
+        <div class="mod-meta">7 leçons · 2h00</div>
+      </div>
+      <div class="mod-arrow">↓</div>
+    </div>
+    <div class="module-body">
+      <div class="lesson"><div class="lesson-dot"></div><span>Les outils pour identifier des produits tendance avant tout le monde</span></div>
+      <div class="lesson"><div class="lesson-dot"></div><span>Trouver des fournisseurs fiables sur Alibaba, AliExpress et en France</span></div>
+      <div class="lesson"><div class="lesson-dot"></div><span>Négocier les prix, les délais et les MOQ comme une pro</span></div>
+      <div class="lesson"><div class="lesson-dot"></div><span>Gérer ton stock et éviter les ruptures en période de forte demande</span></div>
+    </div>
+  </div>
+
+  <div class="module" onclick="toggleModule(this)">
+    <div class="module-header">
+      <div class="mod-num">04</div>
+      <div class="mod-info">
+        <div class="mod-title">Analyser & scaler</div>
+        <div class="mod-meta">6 leçons · 1h45</div>
+      </div>
+      <div class="mod-arrow">↓</div>
+    </div>
+    <div class="module-body">
+      <div class="lesson"><div class="lesson-dot"></div><span>Lire et interpréter tes analytics TikTok Shop pour mieux décider</span></div>
+      <div class="lesson"><div class="lesson-dot"></div><span>Identifier tes produits gagnants et les dupliquer intelligemment</span></div>
+      <div class="lesson"><div class="lesson-dot"></div><span>Utiliser TikTok Ads pour amplifier ce qui marche déjà</span></div>
+      <div class="lesson"><div class="lesson-dot"></div><span>Automatiser les tâches répétitives pour gagner du temps chaque semaine</span></div>
+    </div>
+  </div>
+
+  <div class="module" onclick="toggleModule(this)">
+    <div class="module-header">
+      <div class="mod-num">05</div>
+      <div class="mod-info">
+        <div class="mod-title">Collabs & affiliation</div>
+        <div class="mod-meta">8 leçons · 2h30</div>
+      </div>
+      <div class="mod-arrow">↓</div>
+    </div>
+    <div class="module-body">
+      <div class="lesson"><div class="lesson-dot"></div><span>Rejoindre et utiliser le programme d'affiliation TikTok Shop</span></div>
+      <div class="lesson"><div class="lesson-dot"></div><span>Contacter et convaincre d'autres créatrices de promouvoir tes produits</span></div>
+      <div class="lesson"><div class="lesson-dot"></div><span>Négocier les taux de commission et gérer tes affiliées</span></div>
+      <div class="lesson"><div class="lesson-dot"></div><span>Construire une communauté qui vend pour toi, même quand tu dors</span></div>
+    </div>
+  </div>
+
+  <div class="module" onclick="toggleModule(this)">
+    <div class="module-header">
+      <div class="mod-num">06</div>
+      <div class="mod-info">
+        <div class="mod-title">Monétisation avancée</div>
+        <div class="mod-meta">7 leçons · 2h00</div>
+      </div>
+      <div class="mod-arrow">↓</div>
+    </div>
+    <div class="module-body">
+      <div class="lesson"><div class="lesson-dot"></div><span>Créer plusieurs sources de revenus autour de ta boutique TikTok</span></div>
+      <div class="lesson"><div class="lesson-dot"></div><span>Comprendre la fiscalité de base pour une micro-entrepreneuse</span></div>
+      <div class="lesson"><div class="lesson-dot"></div><span>Passer du side hustle au business à temps plein sereinement</span></div>
+      <div class="lesson"><div class="lesson-dot"></div><span>Construire une marque personnelle durable au-delà de TikTok</span></div>
+    </div>
+  </div>
+
+  <div class="sec-header">
+    <div class="sec-line"></div>
+    <div class="sec-label">Inclus dans le programme</div>
+    <div class="sec-line"></div>
+  </div>
+
+  <div class="bonus-grid">
+    <div class="bonus-card">
+      <div class="bonus-icon">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <h4>Communauté privée</h4>
+      <p>Discord exclusif des membres du club</p>
+    </div>
+    <div class="bonus-card">
+      <div class="bonus-icon">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <h4>Calls live mensuels</h4>
+      <p>Sessions Q&A en direct chaque mois</p>
+    </div>
+    <div class="bonus-card">
+      <div class="bonus-icon">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      </div>
+      <h4>Templates & scripts</h4>
+      <p>+20 modèles prêts à l'emploi</p>
+    </div>
+    <div class="bonus-card">
+      <div class="bonus-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+      </div>
+      <h4>Certificat officiel</h4>
+      <p>Certificat The Creator Club à partager</p>
+    </div>
+  </div>
+
+  <div class="sec-header">
+    <div class="sec-line"></div>
+    <div class="sec-label">Elles l'ont déjà fait</div>
+    <div class="sec-line"></div>
+  </div>
+
+  <div class="testi-grid">
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <div class="testi-text">"J'ai fait mes 1000€ le premier mois. Ce programme m'a donné les outils ET la confiance."</div>
+      <div class="testi-author">
+        <div class="avatar">SL</div>
+        <div><div class="author-name">Sofia L.</div><div class="author-tag">Promo Janvier</div></div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <div class="testi-text">"Je partais de zéro, même pas de compte TikTok. Aujourd'hui j'ai une boutique qui tourne."</div>
+      <div class="testi-author">
+        <div class="avatar">MK</div>
+        <div><div class="author-name">Manon K.</div><div class="author-tag">Promo Mars</div></div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <div class="testi-text">"La communauté seule vaut le prix du programme. Des filles qui te poussent vers le haut."</div>
+      <div class="testi-author">
+        <div class="avatar">JB</div>
+        <div><div class="author-name">Jade B.</div><div class="author-tag">Promo Février</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-header">
+    <div class="sec-line"></div>
+    <div class="sec-label">Rejoindre le club</div>
+    <div class="sec-line"></div>
+  </div>
+
+  <div class="pricing-card">
+    <div class="pricing-top">
+      <div>
+        <div style="font-size:11px;font-weight:500;color:var(--pink);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px;">Accès complet</div>
+        <div class="price-main">297€ <span>/ paiement unique</span></div>
+      </div>
+      <div class="price-alt">Ou 3 × 109€</div>
+    </div>
+    <div class="features">
+      <div class="feat"><div class="feat-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>Accès à vie aux 42 leçons vidéo</div>
+      <div class="feat"><div class="feat-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>Mises à jour gratuites à vie</div>
+      <div class="feat"><div class="feat-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>Communauté privée Discord</div>
+      <div class="feat"><div class="feat-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>12 semaines de calls live inclus</div>
+      <div class="feat"><div class="feat-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>Tous les templates et scripts</div>
+      <div class="feat"><div class="feat-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>Certificat officiel The Creator Club</div>
+    </div>
+    <a class="cta-btn" href="#">Je rejoins The Creator Club maintenant →</a>
+    <div class="guarantee">🔒 Garantie satisfaite ou remboursée 14 jours · Paiement sécurisé</div>
+  </div>
+
+</div>
+
+<script>
+  function toggleModule(el) {
+    el.classList.toggle('open');
+  }
+</script>
+
+</body>
+</html>
